@@ -24,11 +24,19 @@ public class ProductService {
         return pr.findById(productId).orElse(new Product(-1));
     }
 
-    public Product addProduct(Product product, MultipartFile image) throws IOException {
+    public Product addOrUpdateProduct(Product product, MultipartFile image) throws IOException {
         product.setImageName(image.getOriginalFilename());
         product.setImageType(image.getContentType());
         product.setImageData(image.getBytes());
 
         return pr.save(product);
+    }
+
+    public void delete(Product product) {
+        pr.delete(product);
+    }
+
+    public List<Product> searchProducts(String keyword) {
+        return pr.searchProducts(keyword);
     }
 }

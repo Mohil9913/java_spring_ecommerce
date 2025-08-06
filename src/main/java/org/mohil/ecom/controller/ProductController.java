@@ -49,10 +49,41 @@ public class ProductController {
     ) {
         Product savedProduct = null;
         try {
-            savedProduct = ps.addProduct(product, imageFile);
+            savedProduct = ps.addOrUpdateProduct(product, imageFile);
             return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/product/{productId}")
+    public ResponseEntity<String> updateProduct(
+            @PathVariable("productId") int productId,
+            @RequestPart Product product,
+            @RequestPart MultipartFile imageFile
+    ){
+        try{
+            Product updatedProduct = ps.addOrUpdateProduct(product, imageFile);
+            return new ResponseEntity<>("Product updated successfully!", HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/product/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable("productId") Long productId) {
+        Product product = ps.getProductById(productId);
+        if(product == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        ps.delete(product);
+        return new ResponseEntity<>("Product deleted successfully!", HttpStatus.OK);
+    }
+
+    @GetMapping("/products/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String keyword) {
+        List<Product> products = ps.searchProducts(keyword);
+        System.out.println(products.toString());
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }
