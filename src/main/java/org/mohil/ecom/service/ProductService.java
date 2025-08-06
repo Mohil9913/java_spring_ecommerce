@@ -37,6 +37,7 @@ public class ProductService {
     }
 
     public List<Product> searchProducts(String keyword) {
-        return pr.searchProducts(keyword);
+//        return pr.searchProducts(keyword);
+        return pr.findByNameContainingOrDescriptionContainingOrCategoryContaining(keyword, keyword, keyword);
     }
 }
